@@ -16,9 +16,15 @@ type Routes []Route
 var routes = Routes{
 
 	Route{
-		"Test Route",
+		"Is Overlord Alive",
 		"Get",
-		"/api/Test",
-		Tester,
+		"/api/available",
+		Available,
+	},
+	Route{
+		"new Node Connection",
+		"Post",
+		"/api/connect",
+		ConnectNewNode,
 	},
 }
