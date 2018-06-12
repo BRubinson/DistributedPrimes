@@ -27,4 +27,10 @@ var routes = Routes{
 		"/api/getNumber",
 		NewNumber,
 	},
+	Route{
+		"Debug prime find",
+		"Get",
+		"/api/foundPrime",
+		FoundPrime,
+	},
 }

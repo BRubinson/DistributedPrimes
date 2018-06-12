@@ -16,3 +16,7 @@ func NewNumber(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, strconv.Itoa(count))
 	count++
 }
+
+func FoundPrime(w http.ResponseWriter, r *http.Request) {
+	Primes++
+}

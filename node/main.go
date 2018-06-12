@@ -15,6 +15,7 @@ var overlordIp string = "http://localhost"
 var OverlordAddr = overlordIp + overlordPort
 var NodePort string
 var DNode Node
+var Primes int = 0
 
 func isNodeConnected(masterIp string) {
 	if r, err := http.Get(masterIp + "/api/online"); err != nil {
@@ -39,8 +40,12 @@ func getNumber(masterIp string) {
 			panic(err)
 		} else {
 			fmt.Println(string(body))
+			val, _ := strconv.Atoi(string(body))
+			if IsPrime(val) {
+				http.Get(masterIp + "/api/foundPrime")
+			}
 
-			time.Sleep(200)
+			time.Sleep(time.Second / 2)
 			getNumber(masterIp)
 
 		}
@@ -59,6 +64,8 @@ func main() {
 	if DNode.Id != 0 {
 		isNodeConnected(DNode.MasterIp)
 		go getNumber(DNode.MasterIp)
+	} else {
+		MasterDisplay()
 	}
 	//	go func() {
 	log.Fatal(http.ListenAndServe(NodePort, router))
