@@ -13,8 +13,8 @@ func IsPrime(value int) bool {
 
 func IsPrimeSlice(values []int) (primes []int) {
 	for i := range values {
-		if IsPrime(i) {
-			primes = append(primes, i)
+		if IsPrime(values[i]) {
+			primes = append(primes, values[i])
 		}
 	}
 	return

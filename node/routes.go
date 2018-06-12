@@ -24,13 +24,13 @@ var routes = Routes{
 	Route{
 		"Debug get Number",
 		"Get",
-		"/api/getNumber",
-		NewNumber,
+		"/api/getNumbers",
+		GetNumbers,
 	},
 	Route{
 		"Debug prime find",
-		"Get",
-		"/api/foundPrime",
+		"Post",
+		"/api/foundPrimes",
 		FoundPrime,
 	},
 }

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -15,7 +17,7 @@ var overlordIp string = "http://localhost"
 var OverlordAddr = overlordIp + overlordPort
 var NodePort string
 var DNode Node
-var Primes int = 0
+var Primes []int
 
 func isNodeConnected(masterIp string) {
 	if r, err := http.Get(masterIp + "/api/online"); err != nil {
@@ -31,26 +33,33 @@ func isNodeConnected(masterIp string) {
 	}
 }
 
-func getNumber(masterIp string) {
-	if r, err := http.Get(masterIp + "/api/getNumber"); err != nil {
+func getNumbers(masterIp string) {
+	r, err := http.Get(masterIp + "/api/getNumbers")
+	if err != nil {
+		panic(err)
+	}
+	var meisterNumber NumbersLoad
+	defer r.Body.Close()
+	if body, err := ioutil.ReadAll(r.Body); err != nil {
 		panic(err)
 	} else {
-		defer r.Body.Close()
-		if body, err := ioutil.ReadAll(r.Body); err != nil {
+		if err = json.Unmarshal(body, &meisterNumber); err != nil {
 			panic(err)
 		} else {
-			fmt.Println(string(body))
-			val, _ := strconv.Atoi(string(body))
-			if IsPrime(val) {
-				http.Get(masterIp + "/api/foundPrime")
-			}
+			//This is where you succesfully decoded json
+			fmt.Println(meisterNumber.Numbers)
+			meisterNumber.Numbers = IsPrimeSlice(meisterNumber.Numbers)
+			fmt.Println(meisterNumber.Numbers)
+			jstring, _ := json.Marshal(meisterNumber)
+
+			http.Post(masterIp+"/api/foundPrimes", "json", bytes.NewBuffer(jstring))
 
 			time.Sleep(time.Second / 2)
-			getNumber(masterIp)
 
+			getNumbers(masterIp)
 		}
-
 	}
+
 }
 
 func main() {
@@ -63,11 +72,12 @@ func main() {
 	router := NewRouter()
 	if DNode.Id != 0 {
 		isNodeConnected(DNode.MasterIp)
-		go getNumber(DNode.MasterIp)
+		go getNumbers(DNode.MasterIp)
 	} else {
 		MasterDisplay()
 	}
 	//	go func() {
+	Init()
 	log.Fatal(http.ListenAndServe(NodePort, router))
 	//	}()
 
