@@ -1,33 +1,67 @@
 package main
 
 import (
-	"encoding/json"
+	"flag"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"strconv"
 	"time"
 )
 
 var overlordPort string = ":8080"
 var overlordIp string = "http://localhost"
 var OverlordAddr = overlordIp + overlordPort
-var node Node
+var NodePort string
+var DNode Node
 
-func main() {
-	/* port := ":7777"
-	router := NewRouter()
-	go log.Fatal(http.ListenAndServe(port, router)) */
-	node.connect()
-	fmt.Println(node)
+func isNodeConnected(masterIp string) {
+	if r, err := http.Get(masterIp + "/api/online"); err != nil {
+		panic(err)
+	} else {
+		defer r.Body.Close()
+		if body, err := ioutil.ReadAll(r.Body); err != nil {
+			panic(err)
+		} else {
+			fmt.Println(string(body))
+		}
+
+	}
 }
 
-var myClient = &http.Client{Timeout: 10 * time.Second}
+func getNumber(masterIp string) {
+	if r, err := http.Get(masterIp + "/api/getNumber"); err != nil {
+		panic(err)
+	} else {
+		defer r.Body.Close()
+		if body, err := ioutil.ReadAll(r.Body); err != nil {
+			panic(err)
+		} else {
+			fmt.Println(string(body))
 
-func GetJson(url string, target interface{}) error {
-	r, err := myClient.Get(url)
-	if err != nil {
-		return err
+			time.Sleep(200)
+			getNumber(masterIp)
+
+		}
+
 	}
-	defer r.Body.Close()
+}
 
-	return json.NewDecoder(r.Body).Decode(target)
+func main() {
+	portIntpointer := flag.Int("port", 7777, "an int")
+	flag.Parse()
+	NodePort = ":" + strconv.Itoa(*portIntpointer)
+
+	DNode.connectLocal(NodePort)
+	fmt.Println(DNode)
+	router := NewRouter()
+	if DNode.Id != 0 {
+		isNodeConnected(DNode.MasterIp)
+		go getNumber(DNode.MasterIp)
+	}
+	//	go func() {
+	log.Fatal(http.ListenAndServe(NodePort, router))
+	//	}()
+
 }

@@ -8,21 +8,26 @@ import (
 )
 
 type Node struct {
-	Id int64
-	Ip string
+	Id       int64
+	Ip       string
+	MasterIp string
 }
 
 func (node *Node) String() string {
-	return "ID: " + string(node.Id) + " Val: " + node.Ip
+	return "ID: " + string(node.Id) + " Val: " + node.Ip + " Master IP: " + node.MasterIp
 }
 func (node *Node) SetValues(id int64, ip string) {
 	node.Id = id
 	node.Ip = ip
 }
 
-func (node *Node) connect() {
-	var jstring = []byte(`
-	`)
+type connectLocalJson struct {
+	Ip string
+}
+
+func (node *Node) connectLocal(port string) {
+	nodeIp := connectLocalJson{"http://localhost" + port}
+	jstring, _ := json.Marshal(nodeIp)
 	if r, err := http.Post(OverlordAddr+"/api/connect", "json", bytes.NewBuffer(jstring)); err != nil {
 		panic(err)
 	} else {

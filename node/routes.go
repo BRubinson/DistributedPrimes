@@ -16,9 +16,15 @@ type Routes []Route
 var routes = Routes{
 
 	Route{
-		"Test Route",
+		"Is Node Online?",
 		"Get",
-		"/api/Test",
-		Tester,
+		"/api/online",
+		NodeOnline,
+	},
+	Route{
+		"Debug get Number",
+		"Get",
+		"/api/getNumber",
+		NewNumber,
 	},
 }
