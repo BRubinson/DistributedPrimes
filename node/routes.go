@@ -33,4 +33,10 @@ var routes = Routes{
 		"/api/foundPrimes",
 		FoundPrime,
 	},
+	Route{
+		"update node",
+		"Post",
+		"/api/update",
+		UpdateNode,
+	},
 }

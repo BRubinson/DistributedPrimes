@@ -27,4 +27,16 @@ var routes = Routes{
 		"/api/connect",
 		ConnectNewNode,
 	},
+	Route{
+		"master Portal",
+		"Post",
+		"/api/master",
+		MasterPortal,
+	},
+	Route{
+		"NUMBY",
+		"Get",
+		"/api/getnum",
+		GetCount,
+	},
 }

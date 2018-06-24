@@ -3,14 +3,19 @@ package main
 import (
 	"log"
 	"net/http"
+	"time"
 )
 
 var Leader = Overlord{
-	-1,
+	Node{-2, "", ""},
+	[]Node{},
+	[]int{},
 	0,
-	make(map[int64]Node)}
+	time.Now()}
 
 func main() {
+	OverlordDisplay()
+	Leader.ManageMaster()
 	port := ":8080"
 	router := NewRouter()
 	log.Fatal(http.ListenAndServe(port, router))
